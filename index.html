@@ -40,34 +40,6 @@
     body.dark .text-gray-700 { color: #cbd5e1 !important; }
     body.dark input[readonly] { color: #e2e8f0 !important; }
 
-    /* 🌸 Animasi bunga yang lebih rapi */
-    .flower {
-      position: fixed;
-      pointer-events: none;
-      z-index: 1000;
-      animation: fall linear infinite;
-      filter: drop-shadow(0 0 5px rgba(255,255,255,0.8));
-    }
-
-    @keyframes fall {
-      0% {
-        transform: translateY(-100vh) rotate(0deg) scale(0);
-        opacity: 0;
-      }
-      10% {
-        opacity: 1;
-        transform: translateY(-90vh) rotate(30deg) scale(1);
-      }
-      90% {
-        opacity: 1;
-        transform: translateY(90vh) rotate(330deg) scale(1);
-      }
-      100% {
-        transform: translateY(100vh) rotate(360deg) scale(0);
-        opacity: 0;
-      }
-    }
-
     /* Bunga di ujung form */
     .form-flower {
       position: absolute;
@@ -103,21 +75,32 @@
       scroll-behavior: smooth;
     }
 
-    /* Navbar mobile */
-    .mobile-menu {
-      transform: translateX(100%);
-      transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-    }
-
-    .mobile-menu.open {
-      transform: translateX(0);
-    }
-
     /* Fade in animations */
     .fade-in-up {
       opacity: 0;
       transform: translateY(30px);
       animation: fadeInUp 1s ease forwards;
+    }
+
+    /* Portfolio tampil kembali sebagai bagian dari halaman utama. */
+    #portfolio { display: block; }
+    #portfolio, #contact { scroll-margin-top: 5rem; }
+
+    #portfolioGrid > .group {
+      min-width: 0;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    #portfolioGrid > .group > .relative {
+      height: 16rem;
+      flex: 0 0 16rem;
+    }
+
+    #portfolioGrid > .group > .p-8 {
+      flex: 1;
+      min-height: 14rem;
     }
 
     @keyframes fadeInUp {
@@ -301,6 +284,10 @@ body.dark .mobile-menu {
   pointer-events: auto;
 }
 
+/* Keep the overlay below the header so mobile menu links remain clickable. */
+.menu-overlay { z-index: 45; }
+header { z-index: 50; }
+
 /* Support for iPhone Notch */
 header {
   padding-top: env(safe-area-inset-top);
@@ -319,11 +306,6 @@ header {
 .animate-float-delayed {
     animation: float 3s ease-in-out infinite 1.5s;
 }
-@keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
-}
-
 /* Perbaikan transisi form rute */
 #routeForm {
   z-index: 40;
@@ -335,10 +317,116 @@ header {
   min-height: 450px;
 }
 
+/* Mobile animation and layout safeguards */
+* { box-sizing: border-box; }
+html { overflow-x: hidden; }
+body { min-width: 0; overflow-x: hidden; }
+img, iframe, video { max-width: 100%; }
+button, input, select, textarea { font: inherit; }
+.mobile-menu { max-width: min(300px, 86vw); padding-bottom: calc(2rem + env(safe-area-inset-bottom)); }
+.fade-in-up { will-change: transform, opacity; }
+.form-input:focus { transform: translateY(-1px); }
+    .personal-gallery {
+      position: relative;
+      isolation: isolate;
+    }
+    .gallery-stage {
+      position: relative;
+      max-width: 640px;
+      min-height: 280px;
+      margin: 0 auto;
+      overflow: hidden;
+      border-radius: 1.8rem;
+      background: rgba(255, 255, 255, 0.78);
+      border: 2px solid rgba(16, 185, 129, 0.16);
+      box-shadow: 0 24px 60px rgba(16, 185, 129, 0.14);
+    }
+    body.dark .gallery-stage { background: rgba(51, 65, 85, 0.78); }
+    .gallery-slide {
+      display: none;
+      grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+      min-height: 330px;
+    }
+    .gallery-slide.active { display: grid; animation: gallery-enter 0.55s ease both; }
+    .gallery-visual { position: relative; min-height: 330px; overflow: hidden; }
+    .gallery-visual::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(6, 78, 59, 0.04), rgba(236, 72, 153, 0.16));
+      pointer-events: none;
+    }
+    .gallery-visual img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.7s ease; }
+    .gallery-slide.active .gallery-visual img { transform: scale(1.04); }
+    .gallery-content { display: flex; flex-direction: column; justify-content: center; padding: 34px 42px; }
+    .gallery-kicker { color: #059669; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; font-size: 0.78rem; }
+    .gallery-content h4 { margin: 10px 0 12px; font-size: clamp(1.55rem, 2.5vw, 2.25rem); line-height: 1.12; font-weight: 900; color: #064e3b; }
+    body.dark .gallery-content h4 { color: #a7f3d0; }
+    .gallery-content p { color: #64748b; line-height: 1.65; font-size: 0.94rem; }
+    body.dark .gallery-content p { color: #cbd5e1; }
+    .gallery-note { display: flex; align-items: center; gap: 10px; margin-top: 18px; color: #059669; font-weight: 700; font-size: 0.86rem; }
+    .gallery-note i { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 11px; background: #d1fae5; }
+    .gallery-controls { max-width: 640px; display: flex; align-items: center; justify-content: space-between; gap: 14px; margin: 14px auto 0; }
+    .gallery-arrow { width: 36px; height: 36px; border: 0; border-radius: 11px; background: #059669; color: white; box-shadow: 0 6px 14px rgba(5, 150, 105, 0.25); cursor: pointer; transition: transform 0.2s ease, background 0.2s ease; }
+    .gallery-arrow:hover { transform: translateY(-3px); background: #047857; }
+    .gallery-dots { display: flex; justify-content: center; gap: 9px; }
+    .gallery-dot { width: 11px; height: 11px; border: 0; border-radius: 50%; padding: 0; background: #a7f3d0; cursor: pointer; transition: transform 0.2s ease, background 0.2s ease; }
+    .gallery-dot.active { transform: scale(1.45); background: #059669; }
+    .gallery-counter { font-size: 0.75rem; font-weight: 800; color: #64748b; }
+    body.dark .gallery-counter { color: #cbd5e1; }
+    @keyframes gallery-enter { from { opacity: 0; transform: translateX(22px); } to { opacity: 1; transform: translateX(0); } }
+
+    /* Contact section */
+    #contact { background: linear-gradient(135deg, #fffdf8 0%, #ecfdf5 52%, #d1fae5 100%); }
+    body.dark #contact { background: linear-gradient(135deg, #12251f 0%, #0f2f26 55%, #071a15 100%); }
+    #contact .contact-orb { position: absolute; width: 20rem; height: 20rem; border-radius: 999px; background: rgba(52, 211, 153, .13); filter: blur(2px); pointer-events: none; animation: contact-drift 12s ease-in-out infinite; }
+    #contact .contact-orb:first-child { top: -8rem; right: -5rem; }
+    #contact .contact-orb:nth-child(2) { bottom: -9rem; left: -7rem; width: 17rem; height: 17rem; animation-delay: -5s; }
+    @keyframes contact-drift { 0%, 100% { transform: translate3d(0, 0, 0); } 50% { transform: translate3d(0, 16px, 0); } }
+    #contact .contact-kicker { color: #059669; font-size: .75rem; font-weight: 800; letter-spacing: .28em; }
+    body.dark #contact .contact-kicker { color: #6ee7b7; }
+    #contact .contact-heading { max-width: 760px; color: #064e3b; font-size: clamp(2.35rem, 5vw, 4.75rem); line-height: 1.04; letter-spacing: -.03em; }
+    body.dark #contact .contact-heading { color: #d1fae5; }
+    #contact .contact-glass { background: rgba(255, 255, 255, .68); border: 1px solid rgba(255, 255, 255, .82); box-shadow: 0 18px 50px rgba(6, 78, 59, .11); backdrop-filter: blur(18px); }
+    body.dark #contact .contact-glass { background: rgba(20, 51, 43, .72); border-color: rgba(110, 231, 183, .14); box-shadow: 0 18px 50px rgba(0, 0, 0, .22); }
+    #contact .availability-dot { width: 10px; height: 10px; border-radius: 999px; background: #22c55e; box-shadow: 0 0 0 0 rgba(34, 197, 94, .55); animation: contact-pulse 2s infinite; }
+    @keyframes contact-pulse { 70% { box-shadow: 0 0 0 9px rgba(34, 197, 94, 0); } 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); } }
+    #contact .contact-card, #contact .social-card { transition: transform .35s ease, box-shadow .35s ease, border-color .35s ease; }
+    #contact .contact-card:hover, #contact .social-card:hover { transform: translateY(-6px); box-shadow: 0 20px 42px rgba(6, 78, 59, .15); border-color: rgba(16, 185, 129, .45); }
+    #contact .contact-icon { transition: transform .35s ease; }
+    #contact .contact-card:hover .contact-icon, #contact .social-card:hover .contact-icon { transform: rotate(-8deg) scale(1.1); }
+    #contact .contact-input { transition: border-color .25s ease, box-shadow .25s ease, background .25s ease; }
+    #contact .contact-input:focus { outline: none; border-color: #10b981; box-shadow: 0 0 0 4px rgba(16, 185, 129, .14); background: rgba(255, 255, 255, .94); }
+    body.dark #contact .contact-input:focus { background: rgba(15, 23, 42, .75); }
+    #contact .contact-button { transition: transform .25s ease, box-shadow .25s ease; }
+    #contact .contact-button:hover { transform: translateY(-3px); box-shadow: 0 14px 26px rgba(5, 150, 105, .28); }
+    #contact .contact-button.is-loading { pointer-events: none; opacity: .78; }
+    #contact .contact-line { width: 72px; height: 3px; border-radius: 999px; background: linear-gradient(90deg, #34d399, #047857); animation: contact-line 2.4s ease-in-out infinite; }
+    @keyframes contact-line { 0%, 100% { transform: scaleX(.65); opacity: .55; } 50% { transform: scaleX(1.25); opacity: 1; } }
+
 @media (max-width: 768px) {
-  .map-wrapper {
-    min-height: 400px;
-  }
+  header .max-w-7xl { padding-left: 1rem; padding-right: 1rem; }
+  #modeToggle { top: calc(1rem + env(safe-area-inset-top)); right: 1rem; }
+  .mobile-menu { height: 100dvh; padding-top: calc(2rem + env(safe-area-inset-top)); }
+  .map-wrapper { min-height: 360px; }
+  #routeForm { left: 0.75rem; right: 0.75rem; padding: 1rem; }
+  .form-input { font-size: 16px; }
+  .modal-location { padding: 0.75rem; }
+  .modal-location > div { max-height: calc(100dvh - 1.5rem); overflow-y: auto; border-radius: 1.5rem; }
+  .modal-location form { padding: 1.25rem; }
+  .modal-location input, .modal-location select, .modal-location textarea { min-width: 0; }
+  #portfolioGrid > .group > .relative { height: 14rem; flex-basis: 14rem; }
+  .gallery-slide { grid-template-columns: 1fr; }
+  .gallery-visual { min-height: 220px; max-height: 240px; }
+  .gallery-content { padding: 24px 22px 28px; }
+  .gallery-stage, .gallery-slide { min-height: 0; }
+  #contact .contact-heading { font-size: clamp(2.2rem, 11vw, 3.4rem); }
+  #contact .contact-button { width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
 }
   </style>
 </head>
@@ -351,9 +439,6 @@ header {
   <i class="fas fa-moon text-white text-xl hidden dark:inline"></i>
 </button>
 
-<!-- 🌸 Bunga background -->
-<div id="flowers-container"></div>
-
 <!-- Overlay -->
 <div id="menu-overlay" class="menu-overlay"></div>
 
@@ -364,7 +449,7 @@ header {
       <!-- Logo WR -->
       <a href="#home" class="flex items-center space-x-3 group">
         <div class="w-11 h-11 rounded-xl overflow-hidden border-2 border-emerald-500 glow-emerald transition-transform group-hover:scale-110">
-          <img src="https://i1-c.pinimg.com/1200x/ea/a3/35/eaa335657ebe9d933b8f7b7baae27410.jpg" alt="Logo" class="w-full h-full object-cover">
+          <img src="https://i.pinimg.com/736x/9f/c6/21/9fc6213b978622cba6acd9cb85dceec9.jpg" alt="Logo" class="w-full h-full object-cover">
         </div>
         <div class="flex flex-col">
           <span class="font-black text-emerald-700 dark:text-emerald-400 text-lg leading-none">WILDA</span>
@@ -373,13 +458,15 @@ header {
       </a>
 
       <!-- Desktop Menu (Hidden on Mobile) -->
-      <nav class="hidden md:flex space-x-8">
-        <a href="#home" class="nav-link font-bold text-gray-600 hover:text-emerald-600 dark:text-gray-300 transition-colors">Home</a>
-        <a href="#about" class="nav-link font-bold text-gray-600 hover:text-emerald-600 dark:text-gray-300 transition-colors">About</a>
-        <a href="#skills" class="nav-link font-bold text-gray-600 hover:text-emerald-600 dark:text-gray-300 transition-colors">Skills</a>
+      <nav class="hidden md:flex items-center gap-5">
+        <a href="#home" class="nav-link font-bold text-gray-600 hover:text-emerald-600 dark:text-gray-300 transition-colors">Beranda</a>
+        <a href="#about" class="nav-link font-bold text-gray-600 hover:text-emerald-600 dark:text-gray-300 transition-colors">Tentang</a>
+        <a href="#story" class="nav-link font-bold text-gray-600 hover:text-emerald-600 dark:text-gray-300 transition-colors">Cerita</a>
+        <a href="#skills" class="nav-link font-bold text-gray-600 hover:text-emerald-600 dark:text-gray-300 transition-colors">Keahlian</a>
         <a href="#biodata" class="nav-link font-bold text-gray-600 hover:text-emerald-600 dark:text-gray-300 transition-colors">Biodata</a>
+        <a href="#lokasi" class="nav-link font-bold text-gray-600 hover:text-emerald-600 dark:text-gray-300 transition-colors">Lokasi</a>
         <a href="#portfolio" class="nav-link font-bold text-gray-600 hover:text-emerald-600 dark:text-gray-300 transition-colors">Portfolio</a>
-        <a href="#contact" class="nav-link font-bold text-gray-600 hover:text-emerald-600 dark:text-gray-300 transition-colors">Contact</a>
+        <a href="#contact" class="nav-link font-bold text-gray-600 hover:text-emerald-600 dark:text-gray-300 transition-colors">Kontak</a>
       </nav>
 
       <!-- Mobile Menu Button -->
@@ -400,22 +487,28 @@ header {
     
     <nav class="flex flex-col space-y-6">
       <a href="#home" class="mobile-nav-link flex items-center space-x-4 text-xl font-bold text-gray-700 dark:text-gray-200">
-        <i class="fas fa-home w-8 text-emerald-500"></i> <span>Home</span>
+        <i class="fas fa-home w-8 text-emerald-500"></i> <span>Beranda</span>
       </a>
       <a href="#about" class="mobile-nav-link flex items-center space-x-4 text-xl font-bold text-gray-700 dark:text-gray-200">
-        <i class="fas fa-user w-8 text-emerald-500"></i> <span>About</span>
+        <i class="fas fa-user w-8 text-emerald-500"></i> <span>Tentang</span>
+      </a>
+      <a href="#story" class="mobile-nav-link flex items-center space-x-4 text-xl font-bold text-gray-700 dark:text-gray-200">
+        <i class="fas fa-images w-8 text-emerald-500"></i> <span>Cerita Saya</span>
       </a>
       <a href="#skills" class="mobile-nav-link flex items-center space-x-4 text-xl font-bold text-gray-700 dark:text-gray-200">
-        <i class="fas fa-code w-8 text-emerald-500"></i> <span>Skills</span>
+        <i class="fas fa-code w-8 text-emerald-500"></i> <span>Keahlian</span>
       </a>
-       <a href="#biodata" class="mobile-nav-link flex items-center space-x-4 text-xl font-bold text-gray-700 dark:text-gray-200">
-        <i class="fas fa-code w-8 text-emerald-500"></i> <span>Biodata</span>
+      <a href="#biodata" class="mobile-nav-link flex items-center space-x-4 text-xl font-bold text-gray-700 dark:text-gray-200">
+        <i class="fas fa-id-card w-8 text-emerald-500"></i> <span>Biodata</span>
+      </a>
+      <a href="#lokasi" class="mobile-nav-link flex items-center space-x-4 text-xl font-bold text-gray-700 dark:text-gray-200">
+        <i class="fas fa-location-dot w-8 text-emerald-500"></i> <span>Lokasi</span>
       </a>
       <a href="#portfolio" class="mobile-nav-link flex items-center space-x-4 text-xl font-bold text-gray-700 dark:text-gray-200">
         <i class="fas fa-briefcase w-8 text-emerald-500"></i> <span>Portfolio</span>
       </a>
       <a href="#contact" class="mobile-nav-link flex items-center space-x-4 text-xl font-bold text-gray-700 dark:text-gray-200">
-        <i class="fas fa-envelope w-8 text-emerald-500"></i> <span>Contact</span>
+        <i class="fas fa-envelope w-8 text-emerald-500"></i> <span>Kontak</span>
       </a>
     </nav>
 
@@ -488,7 +581,7 @@ header {
         <div class="relative">
           <!-- Frame Foto Hero -->
           <div class="relative z-10 w-72 h-72 md:w-96 md:h-96 rounded-[3rem] overflow-hidden border-8 border-white dark:border-slate-800 shadow-2xl rotate-3 float">
-            <img src="https://i.pinimg.com/736x/2e/59/79/2e59791763d1595acca07fdb28a6d1d0.jpg" alt="Wilda Rahma" class="w-full h-full object-cover">
+            <img src="https://i.pinimg.com/736x/7c/8f/08/7c8f0867971a9d005771844d73f69102.jpg" alt="Wilda Rahma" class="w-full h-full object-cover">
           </div>
           
           <!-- Elemen Melayang -->
@@ -510,92 +603,131 @@ header {
 
 <!-- 🌿 ABOUT SECTION -->
 <section id="about" class="py-24 px-4 bg-white dark:bg-slate-800 relative overflow-hidden">
-  <!-- Dekorasi Daun/Bunga Background -->
-  <div class="absolute top-10 left-0 opacity-10 dark:opacity-5 pointer-events-none">
-    <i class="fas fa-leaf text-[15rem] text-emerald-600 -rotate-45"></i>
-  </div>
+  <div class="absolute top-10 left-0 opacity-10 dark:opacity-5 pointer-events-none"><i class="fas fa-leaf text-[15rem] text-emerald-600 -rotate-45"></i></div>
+  <div class="max-w-6xl mx-auto relative z-10 space-y-20">
+    <div class="max-w-4xl fade-in-up">
+      <p class="text-emerald-600 dark:text-emerald-400 font-bold uppercase tracking-[0.24em] mb-4">ABOUT ME</p>
+      <h2 class="text-4xl md:text-6xl font-black text-gray-900 dark:text-white leading-tight mb-6">Saya Membangun Ide Menjadi <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-emerald-400">Pengalaman Digital.</span></h2>
+      <p class="text-lg md:text-xl text-gray-600 dark:text-slate-400 leading-relaxed">Saya adalah mahasiswi S1 Teknik Informatika yang memiliki ketertarikan pada pengembangan website dan sistem informasi. Saya senang memadukan teknologi, desain, dan kreativitas untuk menciptakan website yang tidak hanya menarik secara visual, tetapi juga memiliki fungsi yang jelas dan memberikan pengalaman yang baik bagi pengguna.</p>
+      <div class="flex flex-wrap gap-3 mt-7">
+        <span class="px-4 py-2 rounded-full bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 font-bold">Web Development</span>
+        <span class="px-4 py-2 rounded-full bg-pink-100 dark:bg-pink-900/30 text-pink-700 dark:text-pink-300 font-bold">Creative Technology</span>
+        <span class="px-4 py-2 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold">Digital Experience</span>
+      </div>
+    </div>
 
-  <div class="max-w-6xl mx-auto relative z-10">
-    <div class="grid lg:grid-cols-2 gap-16 items-center">
-      
-      <!-- Sisi Kiri: Gambar & Badge -->
+    <div class="grid lg:grid-cols-2 gap-12 items-center">
       <div class="relative fade-in-up">
-        <div class="grid grid-cols-2 gap-4">
-          <div class="space-y-4">
-            <div class="rounded-3xl overflow-hidden h-64 shadow-lg hover:scale-105 transition-transform duration-500">
-              <img src="https://i.pinimg.com/736x/5f/ba/bf/5fbabff8cfe569847760c07b7236eeb4.jpg" alt="Coding" class="w-full h-full object-cover">
-            </div>
-            <div class="bg-emerald-600 rounded-3xl p-6 text-white text-center shadow-xl glow-emerald">
-              <h3 class="text-3xl font-bold italic leading-none">"Creative Minds"</h3>
-            </div>
-          </div>
-          <div class="space-y-4 pt-8">
-            <div class="bg-emerald-100 dark:bg-slate-700 rounded-3xl p-6 border-2 border-emerald-200 dark:border-slate-600">
-              <i class="fas fa-quote-left text-3xl text-emerald-600 mb-4"></i>
-              <p class="text-sm font-medium text-emerald-900 dark:text-emerald-200">Teknologi bukan hanya soal kode, tapi soal bagaimana solusi tersebut membantu manusia.</p>
-            </div>
-            <div class="rounded-3xl overflow-hidden h-64 shadow-lg hover:scale-105 transition-transform duration-500">
-              <img src="https://i.pinimg.com/736x/44/52/0e/44520ea1389153ad26b56ee5074b51cf.jpg" alt="Workspace" class="w-full h-full object-cover">
-            </div>
-          </div>
+        <div class="absolute -inset-4 bg-gradient-to-tr from-emerald-400 to-pink-400 rounded-[3rem] blur-2xl opacity-25"></div>
+        <div class="relative overflow-hidden rounded-[3rem] border-4 border-white dark:border-slate-600 shadow-2xl rotate-2 hover:rotate-0 transition-transform duration-700">
+          <img src="https://i.pinimg.com/736x/5e/17/08/5e17087c3c06eeb40baa5052c11e1036.jpg" alt="Wilda Rahma" class="w-full h-[28rem] object-cover">
         </div>
-        
-        <!-- Badge Pengalaman -->
-        <div class="absolute -bottom-6 -right-6 bg-white dark:bg-slate-700 p-6 rounded-2xl shadow-2xl border-l-4 border-emerald-500 flex items-center gap-4 animate-bounce" style="animation-duration: 5s;">
-          <div class="text-4xl font-bold text-emerald-600">S1</div>
-          <div class="text-xs font-bold text-gray-600 dark:text-slate-300 uppercase tracking-widest">Informatics<br>Student</div>
+        <div class="absolute -bottom-7 -right-4 md:right-8 bg-white/80 dark:bg-slate-700/90 backdrop-blur-md p-4 rounded-2xl shadow-xl border border-white dark:border-slate-600 animate-bounce" style="animation-duration: 5s;">
+          <p class="text-xs font-black text-emerald-600">01 — Curious</p><p class="text-sm font-bold text-gray-800 dark:text-white">Always Learning</p>
+        </div>
+        <div class="absolute top-8 -left-4 md:left-8 bg-white/80 dark:bg-slate-700/90 backdrop-blur-md p-4 rounded-2xl shadow-xl border border-white dark:border-slate-600">
+          <p class="text-xs font-black text-pink-500">02 — Creative</p><p class="text-sm font-bold text-gray-800 dark:text-white">Building Digital Ideas</p>
         </div>
       </div>
-
-      <!-- Sisi Kanan: Deskripsi Teks -->
-      <div class="fade-in-up" style="animation-delay: 0.2s;">
-        <h2 class="text-emerald-600 dark:text-emerald-400 font-bold uppercase tracking-[0.2em] mb-4 flex items-center gap-3">
-          <span class="w-8 h-px bg-emerald-600"></span> Tentang Saya
-        </h2>
-        <h3 class="text-4xl font-extrabold text-gray-900 dark:text-white mb-6 leading-tight">
-          Menjembatani Imajinasi dengan <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-emerald-400">Baris Kode.</span>
-        </h3>
-        
-        <div class="space-y-6 text-gray-600 dark:text-slate-400 leading-relaxed text-lg">
-          <p>
-            Halo! Saya <span class="font-bold text-emerald-700 dark:text-emerald-300">Wilda Rahma</span>, seorang mahasiswi Teknik Informatika di Universitas Jabal Ghafur yang antusias dengan dunia pengembangan perangkat lunak dan desain UI/UX.
-          </p>
-          <p>
-            Berawal dari rasa penasaran bagaimana sebuah website bekerja, kini saya mendedikasikan waktu saya untuk mempelajari teknologi modern. Saya percaya bahwa setiap baris kode yang ditulis adalah langkah kecil menuju inovasi besar yang bermanfaat bagi masyarakat luas, khususnya di tanah kelahiran saya, Aceh.
-          </p>
+      <div class="fade-in-up" style="animation-delay:0.2s;">
+        <p class="text-emerald-600 dark:text-emerald-400 font-bold uppercase tracking-[0.2em] mb-4">PERSONAL INTRODUCTION</p>
+        <h3 class="text-3xl md:text-4xl font-black text-gray-900 dark:text-white mb-6">Lebih dari sekadar menulis kode.</h3>
+        <p class="text-lg text-gray-600 dark:text-slate-400 leading-relaxed">Bagi saya, programming bukan hanya tentang bagaimana membuat kode berjalan. Saya menikmati proses menemukan masalah, menyusun solusi, merancang tampilan, membangun sistem, menghubungkan database, hingga melihat sebuah ide berubah menjadi website yang benar-benar dapat digunakan.</p>
+        <div class="grid sm:grid-cols-3 gap-3 mt-8 text-center">
+          <div class="p-4 rounded-2xl bg-emerald-50 dark:bg-slate-700"><i class="fas fa-lightbulb text-emerald-600 text-xl"></i><p class="font-bold text-sm mt-2 text-gray-800 dark:text-white">Problem Solving</p></div>
+          <div class="p-4 rounded-2xl bg-pink-50 dark:bg-slate-700"><i class="fas fa-pen-ruler text-pink-500 text-xl"></i><p class="font-bold text-sm mt-2 text-gray-800 dark:text-white">UI/UX</p></div>
+          <div class="p-4 rounded-2xl bg-emerald-50 dark:bg-slate-700"><i class="fas fa-database text-emerald-600 text-xl"></i><p class="font-bold text-sm mt-2 text-gray-800 dark:text-white">Systems</p></div>
         </div>
+      </div>
+    </div>
 
-        <!-- Kartu Keunggulan -->
-        <div class="grid grid-cols-2 gap-4 mt-10">
-          <div class="flex items-start gap-3">
-            <div class="w-10 h-10 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center text-emerald-600 shrink-0">
-              <i class="fas fa-check-circle"></i>
-            </div>
-            <div>
-              <h4 class="font-bold text-gray-900 dark:text-white">Adaptif</h4>
-              <p class="text-xs">Cepat belajar teknologi baru.</p>
-            </div>
-          </div>
-          <div class="flex items-start gap-3">
-            <div class="w-10 h-10 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center text-emerald-600 shrink-0">
-              <i class="fas fa-check-circle"></i>
-            </div>
-            <div>
-              <h4 class="font-bold text-gray-900 dark:text-white">Kreatif</h4>
-              <p class="text-xs">Desain yang memanjakan mata.</p>
-            </div>
-          </div>
-        </div>
-        
-       <!-- Tombol Download CV yang sudah diaktifkan -->
-<div class="mt-12">
-  <a href="CV_Wilda_Rahma.pdf" 
-     download="CV_Wilda_Rahma.pdf" 
-     class="inline-flex items-center gap-3 px-8 py-4 bg-emerald-50 dark:bg-slate-700 text-emerald-700 dark:text-emerald-400 rounded-2xl font-bold hover:bg-emerald-600 hover:text-white dark:hover:bg-emerald-500 transition-all border-2 border-emerald-600 dark:border-emerald-500 group">
-    <i class="fas fa-download group-hover:animate-bounce"></i> 
-    Download Curriculum Vitae
-  </a>
-</div>
+    <div class="p-6 md:p-8 rounded-3xl bg-emerald-50 dark:bg-slate-700 border-2 border-emerald-200 dark:border-slate-600 fade-in-up">
+      <div class="flex flex-wrap items-center justify-between gap-4 mb-5">
+        <div><p class="text-xs font-black uppercase tracking-[0.2em] text-emerald-600 dark:text-emerald-300">PROFILE SNAPSHOT</p><h3 class="text-2xl font-black text-gray-900 dark:text-white mt-1">Wilda Rahma</h3></div>
+        <span class="text-xs font-bold text-emerald-600 dark:text-emerald-300"><i class="fas fa-sync-alt mr-1"></i>Terbarui otomatis</span>
+      </div>
+      <div class="grid md:grid-cols-2 gap-3 text-sm text-gray-600 dark:text-slate-300">
+        <p><i class="fas fa-user text-emerald-600 mr-2"></i><span id="cvName">Wilda Rahma</span></p>
+        <p><i class="fas fa-calendar text-emerald-600 mr-2"></i><span id="cvBirth">Sigli, 06 Jan 2001</span></p>
+        <p><i class="fas fa-location-dot text-emerald-600 mr-2"></i><span id="cvAddress">Gampong Jeumpa, Sakti, Sigli, Pidie, Aceh</span></p>
+        <p><i class="fas fa-graduation-cap text-emerald-600 mr-2"></i><span id="cvEducation">Universitas Jabal Ghafur</span></p>
+      </div>
+    </div>
+
+    <div class="fade-in-up">
+      <p class="text-emerald-600 dark:text-emerald-400 font-bold uppercase tracking-[0.2em] mb-3">MY CODING JOURNEY</p>
+      <h3 class="text-3xl md:text-4xl font-black text-gray-900 dark:text-white mb-10">Perjalanan Saya di Dunia Coding</h3>
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div class="p-6 rounded-3xl bg-emerald-50 dark:bg-slate-700 border border-emerald-100 dark:border-slate-600 hover:-translate-y-1 transition-transform"><span class="text-emerald-600 font-black">01 — The Beginning</span><h4 class="font-black text-xl text-gray-900 dark:text-white mt-3">Mengenal Dunia Pemrograman</h4><p class="text-sm text-gray-600 dark:text-slate-300 mt-2">Mulai mengenal pemrograman melalui pendidikan Teknik Informatika dan memahami konsep dasar programming.</p><span class="inline-block mt-4 text-xs font-bold text-emerald-700 dark:text-emerald-300">Programming Basics</span></div>
+        <div class="p-6 rounded-3xl bg-white dark:bg-slate-700 border border-emerald-100 dark:border-slate-600 shadow-lg hover:-translate-y-1 transition-transform"><span class="text-pink-500 font-black">02 — First Website</span><h4 class="font-black text-xl text-gray-900 dark:text-white mt-3">Mulai Membangun Website</h4><p class="text-sm text-gray-600 dark:text-slate-300 mt-2">Mulai mempelajari HTML dan CSS serta memahami struktur dan tampilan website.</p><span class="inline-block mt-4 text-xs font-bold text-pink-600 dark:text-pink-300">HTML · CSS · Web Design</span></div>
+        <div class="p-6 rounded-3xl bg-emerald-50 dark:bg-slate-700 border border-emerald-100 dark:border-slate-600 hover:-translate-y-1 transition-transform"><span class="text-emerald-600 font-black">03 — Interactive Web</span><h4 class="font-black text-xl text-gray-900 dark:text-white mt-3">Website Mulai Lebih Interaktif</h4><p class="text-sm text-gray-600 dark:text-slate-300 mt-2">Mulai menggunakan JavaScript untuk membuat website lebih interaktif.</p><span class="inline-block mt-4 text-xs font-bold text-emerald-700 dark:text-emerald-300">JavaScript · UI Interaction</span></div>
+        <div class="p-6 rounded-3xl bg-white dark:bg-slate-700 border border-emerald-100 dark:border-slate-600 shadow-lg hover:-translate-y-1 transition-transform"><span class="text-pink-500 font-black">04 — Backend & Database</span><h4 class="font-black text-xl text-gray-900 dark:text-white mt-3">Belajar Membangun Sistem</h4><p class="text-sm text-gray-600 dark:text-slate-300 mt-2">Mulai menggunakan PHP dan MySQL serta memahami CRUD, database, login, dan dashboard.</p><span class="inline-block mt-4 text-xs font-bold text-pink-600 dark:text-pink-300">PHP · MySQL · CRUD</span></div>
+        <div class="p-6 rounded-3xl bg-emerald-50 dark:bg-slate-700 border border-emerald-100 dark:border-slate-600 hover:-translate-y-1 transition-transform"><span class="text-emerald-600 font-black">05 — Building Projects</span><h4 class="font-black text-xl text-gray-900 dark:text-white mt-3">Mulai Membuat Berbagai Project</h4><p class="text-sm text-gray-600 dark:text-slate-300 mt-2">Mengembangkan portfolio, sistem presensi, dashboard, sistem organisasi, dan website UMKM.</p><span class="inline-block mt-4 text-xs font-bold text-emerald-700 dark:text-emerald-300">Web Development · Information System</span></div>
+        <div class="p-6 rounded-3xl bg-white dark:bg-slate-700 border border-emerald-100 dark:border-slate-600 shadow-lg hover:-translate-y-1 transition-transform"><span class="text-pink-500 font-black">06 — Today</span><h4 class="font-black text-xl text-gray-900 dark:text-white mt-3">Terus Belajar, Terus Membangun</h4><p class="text-sm text-gray-600 dark:text-slate-300 mt-2">Terus mengembangkan kemampuan dalam web development, UI/UX, database, dan teknologi modern.</p><span class="inline-block mt-4 text-xs font-bold text-pink-600 dark:text-pink-300">Learning · Building · Growing</span></div>
+      </div>
+    </div>
+
+    <div class="fade-in-up">
+      <p class="text-emerald-600 dark:text-emerald-400 font-bold uppercase tracking-[0.2em] mb-3">MY APPROACH</p>
+      <h3 class="text-3xl md:text-4xl font-black text-gray-900 dark:text-white mb-8">Build. Learn. Improve.</h3>
+      <div class="grid md:grid-cols-3 gap-5">
+        <div class="p-7 rounded-3xl bg-emerald-800 text-white shadow-xl"><span class="text-emerald-300 font-black">01 — Build</span><p class="mt-4 leading-relaxed">Tidak hanya belajar teori, tetapi mencoba menerapkannya melalui project.</p></div>
+        <div class="p-7 rounded-3xl bg-white dark:bg-slate-700 text-gray-800 dark:text-white border border-emerald-100 dark:border-slate-600 shadow-xl"><span class="text-pink-500 font-black">02 — Learn</span><p class="mt-4 leading-relaxed">Setiap error dan tantangan menjadi bagian dari proses belajar.</p></div>
+        <div class="p-7 rounded-3xl bg-emerald-50 dark:bg-slate-700 text-gray-800 dark:text-white border border-emerald-100 dark:border-slate-600 shadow-xl"><span class="text-emerald-600 font-black">03 — Improve</span><p class="mt-4 leading-relaxed">Terus memperbaiki tampilan, fungsi, struktur kode, dan pengalaman pengguna.</p></div>
+      </div>
+    </div>
+
+    <div class="text-center p-10 md:p-14 rounded-[3rem] bg-gradient-to-br from-emerald-700 to-emerald-900 text-white shadow-2xl fade-in-up">
+      <p class="text-xl md:text-3xl font-bold italic leading-relaxed">“Saya mungkin masih dalam perjalanan belajar, tetapi setiap project yang saya bangun membawa saya satu langkah lebih dekat untuk menjadi Web Developer yang lebih baik.”</p>
+      <p class="mt-5 font-black text-emerald-200">— Wilda Rahma</p>
+    </div>
+
+    <div class="text-center fade-in-up">
+      <h3 class="text-3xl md:text-4xl font-black text-gray-900 dark:text-white mb-6">Mari lihat apa yang telah saya bangun.</h3>
+      <div class="flex flex-wrap justify-center gap-4">
+        <a href="#portfolio" class="inline-flex items-center gap-3 px-7 py-4 bg-emerald-600 text-white rounded-2xl font-bold shadow-lg hover:bg-emerald-700 hover:-translate-y-1 transition-all">Explore My Projects <i class="fas fa-arrow-right"></i></a>
+        <a href="CV_Wilda_Rahma.pdf" download="CV_Wilda_Rahma.pdf" class="inline-flex items-center gap-3 px-7 py-4 bg-emerald-50 dark:bg-slate-700 text-emerald-700 dark:text-emerald-300 rounded-2xl font-bold border-2 border-emerald-600 hover:bg-emerald-600 hover:text-white transition-all"><i class="fas fa-download"></i>Download CV</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 🌿 PERSONAL STORY GALLERY -->
+<section id="story" class="personal-gallery py-24 px-4 bg-gradient-to-br from-pink-50 via-white to-emerald-50 dark:from-slate-900 dark:via-slate-800 dark:to-emerald-950 overflow-hidden">
+  <div class="max-w-6xl mx-auto relative z-10">
+    <div class="text-center mb-12 fade-in-up">
+      <p class="text-emerald-600 dark:text-emerald-400 font-bold uppercase tracking-[0.2em] mb-3">Mini Album Pribadi</p>
+      <h2 class="text-4xl md:text-5xl font-black text-gray-900 dark:text-white mb-4">Cerita di Balik Layar</h2>
+      <p class="max-w-2xl mx-auto text-gray-600 dark:text-slate-400 text-lg">Beberapa potongan kecil tentang siapa saya, apa yang saya pelajari, dan aktivitas yang membuat saya terus bertumbuh.</p>
+    </div>
+    <div class="gallery-stage fade-in-up" id="personalGallery" tabindex="0" aria-label="Galeri cerita pribadi">
+      <article class="gallery-slide active" data-slide="0">
+        <div class="gallery-visual"><img src="https://i.pinimg.com/736x/dc/8a/4b/dc8a4b14c4d043397bb3ca817e70ce50.jpg" alt="Wilda Rahma dalam aktivitas pribadi"></div>
+        <div class="gallery-content"><span class="gallery-kicker">01 · Tentang Saya</span><h4>Pribadi yang selalu ingin berkembang</h4><p>Saya Wilda Rahma, mahasiswi Teknik Informatika yang menikmati proses belajar, mencoba hal baru, dan mencari cara sederhana untuk membuat teknologi terasa lebih dekat.</p><span class="gallery-note"><i class="fas fa-heart"></i> Membawa rasa ingin tahu ke setiap langkah</span></div>
+      </article>
+      <article class="gallery-slide" data-slide="1">
+        <div class="gallery-visual"><img src="https://i.pinimg.com/736x/e6/c0/20/e6c020a521915501bea4c6d2389392f4.jpg" alt="Aktivitas belajar coding"></div>
+        <div class="gallery-content"><span class="gallery-kicker">02 · Aktivitas Belajar</span><h4>Menikmati proses dari baris kode</h4><p>Di balik sebuah website ada banyak percobaan, perbaikan, dan rasa penasaran. Saya senang mempelajari front-end, logika program, dan cara membuat pengalaman yang nyaman.</p><span class="gallery-note"><i class="fas fa-code"></i> Belajar sedikit demi sedikit, setiap hari</span></div>
+      </article>
+      <article class="gallery-slide" data-slide="2">
+        <div class="gallery-visual"><img src="https://i.pinimg.com/736x/c4/29/36/c429364c671817d8742518d56ad6bdc5.jpg" alt="Workspace dan proses desain"></div>
+        <div class="gallery-content"><span class="gallery-kicker">03 · Kreativitas</span><h4>Mencari keseimbangan antara fungsi dan rasa</h4><p>Saya percaya desain yang baik bukan hanya terlihat cantik. Ia juga harus membantu orang memahami informasi, menemukan arah, dan merasa nyaman saat berinteraksi.</p><span class="gallery-note"><i class="fas fa-pen-ruler"></i> Merancang dengan perhatian pada detail</span></div>
+      </article>
+      <article class="gallery-slide" data-slide="3">
+        <div class="gallery-visual"><img src="https://i.pinimg.com/736x/41/89/c0/4189c0b5044e2b38f05c1911d477d5cb.jpg" alt="Karya digital dan eksplorasi visual"></div>
+        <div class="gallery-content"><span class="gallery-kicker">04 · Jejak Karya</span><h4>Setiap project menyimpan cerita</h4><p>Project yang saya kerjakan menjadi ruang untuk menguji ide, memahami kebutuhan pengguna, dan mengubah tantangan menjadi pengalaman yang bisa dibagikan.</p><span class="gallery-note"><i class="fas fa-rocket"></i> Siap melangkah ke tantangan berikutnya</span></div>
+      </article>
+    </div>
+
+    <div class="gallery-controls" aria-label="Kontrol mini album">
+      <button type="button" class="gallery-arrow" id="galleryPrev" aria-label="Slide sebelumnya"><i class="fas fa-arrow-left"></i></button>
+      <div class="flex flex-col items-center gap-3">
+        <div class="gallery-dots" id="galleryDots" aria-label="Pilih slide"></div>
+        <span class="gallery-counter" id="galleryCounter">01 / 04</span>
+      </div>
+      <button type="button" class="gallery-arrow" id="galleryNext" aria-label="Slide berikutnya"><i class="fas fa-arrow-right"></i></button>
+    </div>
+  </div>
 </section>
 
 <!-- 🌿 SKILLS SECTION -->
@@ -729,7 +861,7 @@ header {
           <div class="relative">
             <div class="absolute -inset-4 bg-gradient-to-tr from-emerald-400 to-pink-400 rounded-[3rem] blur-xl opacity-30 group-hover:opacity-60 transition duration-1000"></div>
             <div class="relative w-64 h-80 rounded-[2.5rem] overflow-hidden border-4 border-white dark:border-slate-500 shadow-2xl rotate-2 group-hover:rotate-0 transition-transform duration-700">
-              <img id="profilePhoto" src="https://i.pinimg.com/736x/3b/c8/20/3bc820565c25a730cf0deae620256341.jpg" alt="Wilda Rahma" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+              <img id="profilePhoto" src="https://i.pinimg.com/736x/f3/33/73/f33373040da49fa6ad4e15373f99f309.jpg" alt="Wilda Rahma" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
             </div>
           </div>
           
@@ -758,7 +890,7 @@ header {
               <label class="text-xs font-black text-emerald-700 dark:text-emerald-400 uppercase tracking-widest ml-1">Nama Lengkap</label>
               <div class="flex items-center gap-4">
                 <span class="text-2xl group-hover:scale-125 transition-transform">🌸</span>
-                <p class="text-lg font-bold text-gray-800 dark:text-slate-100">Wilda Rahma</p>
+                <p id="bioName" contenteditable="true" spellcheck="false" class="cv-field text-lg font-bold text-gray-800 dark:text-slate-100">Wilda Rahma</p>
               </div>
             </div>
 
@@ -767,7 +899,7 @@ header {
               <label class="text-xs font-black text-emerald-700 dark:text-emerald-400 uppercase tracking-widest ml-1">Kelahiran</label>
               <div class="flex items-center gap-4">
                 <span class="text-2xl group-hover:scale-125 transition-transform">🌺</span>
-                <p class="text-lg font-bold text-gray-800 dark:text-slate-100">Sigli, 06 Jan 2001</p>
+                <p id="bioBirth" contenteditable="true" spellcheck="false" class="cv-field text-lg font-bold text-gray-800 dark:text-slate-100">Sigli, 06 Jan 2001</p>
               </div>
             </div>
 
@@ -776,7 +908,7 @@ header {
               <label class="text-xs font-black text-emerald-700 dark:text-emerald-400 uppercase tracking-widest ml-1">Alamat Domisili</label>
               <div class="flex items-center gap-4">
                 <span class="text-2xl group-hover:scale-125 transition-transform">🌻</span>
-                <p class="text-lg font-bold text-gray-800 dark:text-slate-100 leading-relaxed">Gampong Jeumpa, Sakti, Sigli, Pidie, Aceh</p>
+                <p id="bioAddress" contenteditable="true" spellcheck="false" class="cv-field text-lg font-bold text-gray-800 dark:text-slate-100 leading-relaxed">Gampong Jeumpa, Sakti, Sigli, Pidie, Aceh</p>
               </div>
             </div>
           </div>
@@ -791,7 +923,7 @@ header {
             </h4>
             <div class="space-y-4">
               <div class="border-l-4 border-emerald-400 pl-4">
-                <p class="font-black text-lg">Universitas Jabal Ghafur</p>
+                <p id="bioEducation" contenteditable="true" spellcheck="false" class="cv-field font-black text-lg">Universitas Jabal Ghafur</p>
                  <p class="font-black text-lg">SMAN 1 SAKTI</p>
                   <p class="font-black text-lg">SMPN 4 TAKENGON</p>
                    <p class="font-black text-lg">SDN 8 BEBESEN</p>
@@ -814,7 +946,7 @@ header {
 </section>
 
 <!-- SECTION: BIODATA & LOKASI -->
-<section id="Biodata" class="py-20 px-4">
+<section id="lokasi" class="py-20 px-4">
     <div class="max-w-7xl mx-auto">
         <div class="grid lg:grid-cols-2 gap-8 items-stretch">
             
@@ -896,13 +1028,8 @@ header {
       <div class="w-24 h-1.5 bg-emerald-500 mx-auto rounded-full"></div>
     </div>
 
-    <!-- Filter Buttons (Opsional secara visual) -->
-    <div class="flex flex-wrap justify-center gap-4 mb-12 fade-in-up">
-      <button class="px-6 py-2 bg-emerald-600 text-white rounded-full font-bold shadow-lg">All Project</button>
-    </div>
-
     <!-- Portfolio Grid -->
-    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+    <div id="portfolioGrid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
       
       <!-- Project 1 -->
       <div class="group relative bg-white dark:bg-slate-800 rounded-[2.5rem] overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-4 fade-in-up">
@@ -949,7 +1076,7 @@ header {
           </div>
           <img src="https://i.pinimg.com/736x/a0/bd/07/a0bd079166e18140b785b97dbf43a04d.jpg" alt="Project 3" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
           <div class="absolute inset-0 bg-gradient-to-t from-emerald-900/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end justify-center pb-8">
-            <a href="https://wildarahma52-maker.github.io/Profil_Protopolio/" class="px-6 py-3 bg-white text-emerald-700 dark:bg-slate-700 dark:text-emerald-300 font-bold rounded-xl hover:bg-emerald-50 dark:hover:bg-slate-600 transition-all shadow-lg font-bold rounded-xl transform translate-y-10 group-hover:translate-y-0 transition-transform duration-500" target="_blank">Live Demo</a>
+            <a href="https://daskiagotik2-ux.github.io/trevel/" class="px-6 py-3 bg-white text-emerald-700 dark:bg-slate-700 dark:text-emerald-300 font-bold rounded-xl hover:bg-emerald-50 dark:hover:bg-slate-600 transition-all shadow-lg font-bold rounded-xl transform translate-y-10 group-hover:translate-y-0 transition-transform duration-500" target="_blank">Live Demo</a>
           </div>
         </div>
         <div class="p-8">
@@ -959,8 +1086,132 @@ header {
         </div>
       </div>
 
-    </div>
+       <!-- Project 4 -->
+      <div class="group relative bg-white dark:bg-slate-800 rounded-[2.5rem] overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-4 fade-in-up" style="animation-delay: 0.4s;">
+        <div class="relative h-64 overflow-hidden">
+          <div class="absolute top-4 right-4 z-20 bg-white/80 dark:bg-slate-700/80 p-2 rounded-full shadow-md group-hover:rotate-180 transition-transform duration-700">
+            🦢
+          </div>
+          <img src="https://i.pinimg.com/736x/a1/3c/44/a13c44e347c97f412009238aa65ed98f.jpg" alt="Project 3" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+          <div class="absolute inset-0 bg-gradient-to-t from-emerald-900/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end justify-center pb-8">
+            <a href="https://presensi.42web.io/index.php" class="px-6 py-3 bg-white text-emerald-700 dark:bg-slate-700 dark:text-emerald-300 font-bold rounded-xl hover:bg-emerald-50 dark:hover:bg-slate-600 transition-all shadow-lg font-bold rounded-xl transform translate-y-10 group-hover:translate-y-0 transition-transform duration-500" target="_blank">Live Demo</a>
+          </div>
+        </div>
+        <div class="p-8">
+          <span class="text-xs font-bold text-emerald-600 uppercase tracking-tighter">Persensi Dosen</span>
+          <h4 class="text-xl font-bold text-gray-900 dark:text-white mt-2 mb-3">Absen Dosen</h4>
+          <p class="text-sm text-gray-500 dark:text-slate-400">website cerdas untuk kemajuan dalam manajemen absensi dosen .</p>
+        </div>
+      </div>
 
+      <!-- Project 5 -->
+      <div class="group relative bg-white dark:bg-slate-800 rounded-[2.5rem] overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-4 fade-in-up" style="animation-delay: 0.4s;">
+        <div class="relative h-64 overflow-hidden">
+          <div class="absolute top-4 right-4 z-20 bg-white/80 dark:bg-slate-700/80 p-2 rounded-full shadow-md group-hover:rotate-180 transition-transform duration-700">
+            🐣
+          </div>
+          <img src="https://i.pinimg.com/736x/fb/16/83/fb1683fb0527999da83bde1b83e81055.jpg" alt="Project 3" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+          <div class="absolute inset-0 bg-gradient-to-t from-emerald-900/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end justify-center pb-8">
+            <a href="https://youwaras.rf.gd/" class="px-6 py-3 bg-white text-emerald-700 dark:bg-slate-700 dark:text-emerald-300 font-bold rounded-xl hover:bg-emerald-50 dark:hover:bg-slate-600 transition-all shadow-lg font-bold rounded-xl transform translate-y-10 group-hover:translate-y-0 transition-transform duration-500" target="_blank">Live Demo</a>
+          </div>
+        </div>
+        <div class="p-8">
+          <span class="text-xs font-bold text-emerald-600 uppercase tracking-tighter">Dokter Ai</span>
+          <h4 class="text-xl font-bold text-gray-900 dark:text-white mt-2 mb-3">SehatAi</h4>
+          <p class="text-sm text-gray-500 dark:text-slate-400">website cerdas untuk kesehatan dan memudahkan dalam diagnosis penyakit .</p>
+        </div>
+      </div>
+
+
+      <!-- Project 6-->
+      <div class="group relative bg-white dark:bg-slate-800 rounded-[2.5rem] overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-4 fade-in-up" style="animation-delay: 0.4s;">
+        <div class="relative h-64 overflow-hidden">
+          <div class="absolute top-4 right-4 z-20 bg-white/80 dark:bg-slate-700/80 p-2 rounded-full shadow-md group-hover:rotate-180 transition-transform duration-700">
+            🏵️
+          </div>
+          <img src="https://i.pinimg.com/736x/5e/23/6b/5e236b19cc9313aa4a44c291aaf347ec.jpg" alt="Project 3" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+          <div class="absolute inset-0 bg-gradient-to-t from-emerald-900/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end justify-center pb-8">
+            <a href="https://wilda.free.nf/?i=1" class="px-6 py-3 bg-white text-emerald-700 dark:bg-slate-700 dark:text-emerald-300 font-bold rounded-xl hover:bg-emerald-50 dark:hover:bg-slate-600 transition-all shadow-lg font-bold rounded-xl transform translate-y-10 group-hover:translate-y-0 transition-transform duration-500" target="_blank">Live Demo</a>
+          </div>
+        </div>
+        <div class="p-8">
+          <span class="text-xs font-bold text-emerald-600 uppercase tracking-tighter">Bansos Sakti</span>
+          <h4 class="text-xl font-bold text-gray-900 dark:text-white mt-2 mb-3">Bansos</h4>
+          <p class="text-sm text-gray-500 dark:text-slate-400">website untuk distribusi bantuan sosial.</p>
+        </div>
+      </div>
+
+      <!-- Project 7-->
+      <div class="group relative bg-white dark:bg-slate-800 rounded-[2.5rem] overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-4 fade-in-up" style="animation-delay: 0.4s;">
+        <div class="relative h-64 overflow-hidden">
+          <div class="absolute top-4 right-4 z-20 bg-white/80 dark:bg-slate-700/80 p-2 rounded-full shadow-md group-hover:rotate-180 transition-transform duration-700">
+            💻
+          </div>
+          <img src="https://i.pinimg.com/736x/68/fe/74/68fe7436c8ace58369f6c13fbd9d0d4d.jpg" alt="Project 3" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+          <div class="absolute inset-0 bg-gradient-to-t from-emerald-900/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end justify-center pb-8">
+            <a href="https://wokwi.com/projects/461886487004599297" class="px-6 py-3 bg-white text-emerald-700 dark:bg-slate-700 dark:text-emerald-300 font-bold rounded-xl hover:bg-emerald-50 dark:hover:bg-slate-600 transition-all shadow-lg font-bold rounded-xl transform translate-y-10 group-hover:translate-y-0 transition-transform duration-500" target="_blank">Live Demo</a>
+          </div>
+        </div>
+        <div class="p-8">
+          <span class="text-xs font-bold text-emerald-600 uppercase tracking-tighter">Internet Of Things (IoT)</span>
+          <h4 class="text-xl font-bold text-gray-900 dark:text-white mt-2 mb-3">Simulasi Pintu Air / Katup Otomatis Terkontrol Suhu Menggunakan ESP32</h4>
+          <p class="text-sm text-gray-500 dark:text-slate-400">Simulasi sistem kontrol otomatis untuk pintu air dan katup berbasis ESP32.</p>
+        </div>
+      </div>
+      <!-- Project 8-->
+      <div class="group relative bg-white dark:bg-slate-800 rounded-[2.5rem] overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-4 fade-in-up" style="animation-delay: 0.4s;">
+        <div class="relative h-64 overflow-hidden">
+          <div class="absolute top-4 right-4 z-20 bg-white/80 dark:bg-slate-700/80 p-2 rounded-full shadow-md group-hover:rotate-180 transition-transform duration-700">
+            🦀
+          </div>
+          <img src="https://i.pinimg.com/736x/1a/d7/3b/1ad73b4da422b21548866d5943624513.jpg" alt="Project 3" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+          <div class="absolute inset-0 bg-gradient-to-t from-emerald-900/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end justify-center pb-8">
+            <a href="https://wokwi.com/projects/461560521385657345" class="px-6 py-3 bg-white text-emerald-700 dark:bg-slate-700 dark:text-emerald-300 font-bold rounded-xl hover:bg-emerald-50 dark:hover:bg-slate-600 transition-all shadow-lg font-bold rounded-xl transform translate-y-10 group-hover:translate-y-0 transition-transform duration-500" target="_blank">Live Demo</a>
+          </div>
+        </div>
+        <div class="p-8">
+          <span class="text-xs font-bold text-emerald-600 uppercase tracking-tighter">Internet Of Things (IoT)</span>
+          <h4 class="text-xl font-bold text-gray-900 dark:text-white mt-2 mb-3">Simulasi Rancang Bangun Simulasi Lampu Lalu Lintas Interaktif Menggunakan Tombol Mode Darurat</h4>
+          <p class="text-sm text-gray-500 dark:text-slate-400">Simulasi sistem kontrol interaktif untuk lampu lalu lintas berbasis tombol mode darurat.</p>
+        </div>
+      </div>
+
+
+    <!-- Project 9-->
+      <div class="group relative h-full bg-white dark:bg-slate-800 rounded-[2.5rem] overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-4 fade-in-up flex flex-col" style="animation-delay: 0.6s;">
+        <div class="relative h-64 overflow-hidden">
+          <div class="absolute top-4 right-4 z-20 bg-white/80 dark:bg-slate-700/80 p-2 rounded-full shadow-md group-hover:rotate-180 transition-transform duration-700">
+            ♣️
+          </div>
+          <img src="https://i.pinimg.com/736x/be/9e/9a/be9e9ac7ad4948f12d5461b4c9f9ed16.jpg" alt="Project 9" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+          <div class="absolute inset-0 bg-gradient-to-t from-emerald-900/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end justify-center pb-8">
+            <a href="https://wokwi.com/projects/474412924999493633" class="px-6 py-3 bg-white text-emerald-700 dark:bg-slate-700 dark:text-emerald-300 font-bold rounded-xl hover:bg-emerald-50 dark:hover:bg-slate-600 transition-all shadow-lg font-bold rounded-xl transform translate-y-10 group-hover:translate-y-0 transition-transform duration-500" target="_blank">Live Demo</a>
+          </div>
+        </div>
+        <div class="p-8 flex-1">
+          <span class="text-xs font-bold text-emerald-600 uppercase tracking-tighter">Internet Of Things (IoT)</span>
+          <h4 class="text-xl font-bold text-gray-900 dark:text-white mt-2 mb-3">Simulasi sistem kontrol otomatis menggunakan sensor PIR dan motor servo dengan indikator LED berbasis ESP32</h4>
+          <p class="text-sm text-gray-500 dark:text-slate-400">Simulasi sistem kontrol otomatis menggunakan sensor PIR dan motor servo dengan indikator LED berbasis ESP32.</p>
+        </div>
+      </div>
+     <!-- Project 10-->
+      <div class="group relative h-full bg-white dark:bg-slate-800 rounded-[2.5rem] overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-4 fade-in-up flex flex-col" style="animation-delay: 0.6s;">
+        <div class="relative h-64 overflow-hidden">
+          <div class="absolute top-4 right-4 z-20 bg-white/80 dark:bg-slate-700/80 p-2 rounded-full shadow-md group-hover:rotate-180 transition-transform duration-700">
+            🎉
+          </div>
+          <img src="https://i.pinimg.com/736x/58/f9/5c/58f95cc61701722e0d78f3229a504797.jpg" alt="Project 10" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+          <div class="absolute inset-0 bg-gradient-to-t from-emerald-900/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end justify-center pb-8">
+            <a href="https://wildarahmaarahmaa-web.github.io/ijah/" class="px-6 py-3 bg-white text-emerald-700 dark:bg-slate-700 dark:text-emerald-300 font-bold rounded-xl hover:bg-emerald-50 dark:hover:bg-slate-600 transition-all shadow-lg font-bold rounded-xl transform translate-y-10 group-hover:translate-y-0 transition-transform duration-500" target="_blank">Live Demo</a>
+          </div>
+        </div>
+        <div class="p-8 flex-1">
+          <span class="text-xs font-bold text-emerald-600 uppercase tracking-tighter">Kartu ucapan sederhana</span>
+          <h4 class="text-xl font-bold text-gray-900 dark:text-white mt-2 mb-3">Kartu Ucapan Sederhana untuk sahabatku, dalam bentuk digital yang sederhana</h4>
+          <p class="text-sm text-gray-500 dark:text-slate-400">Doa sederhana untuk sahabatku.</p>
+        </div>
+      </div>
+    </div>
     <!-- CTA Portfolio -->
     <div class="mt-20 p-12 bg-emerald-800 rounded-[3rem] text-center text-white shadow-2xl relative overflow-hidden">
       <div class="form-flower top-right text-4xl" style="filter: brightness(0) invert(1);">🌸</div>
@@ -976,29 +1227,26 @@ header {
   </div>
 </section>
 <!-- 🌿 CONTACT SECTION (FLOWER GARDEN EDITION) -->
-<section id="contact" class="py-24 px-4 bg-gradient-to-b from-white to-emerald-50 dark:from-slate-800 dark:to-slate-950 relative overflow-hidden">
+<section id="contact" class="relative overflow-hidden py-24 px-4">
   
   <!-- 🌸 Bunga Raksasa Dekoratif (Latar Belakang) -->
-  <div class="absolute -top-20 -left-20 text-[20rem] opacity-10 dark:opacity-5 animate-[spin_30s_linear_infinite] pointer-events-none">🌸</div>
-  <div class="absolute -bottom-20 -right-20 text-[18rem] opacity-10 dark:opacity-5 animate-[spin_25s_linear_infinite_reverse] pointer-events-none">🌺</div>
-  <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[25rem] opacity-[0.03] dark:opacity-[0.02] pointer-events-none">🌻</div>
+  <div class="contact-orb"></div><div class="contact-orb"></div>
 
   <div class="max-w-6xl mx-auto relative z-10">
     <!-- Header dengan Animasi Bunga Memantul -->
-    <div class="text-center mb-20 fade-in-up">
-      <div class="inline-block animate-bounce mb-4 text-5xl">💐</div>
-      <h2 class="text-5xl md:text-6xl font-black text-emerald-900 dark:text-emerald-400 mb-6">
-        Mari <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-pink-500">Terhubung</span>
-      </h2>
-      <p class="text-xl text-gray-600 dark:text-slate-400 max-w-2xl mx-auto font-medium">
-        Punya ide cemerlang atau sekadar ingin menyapa? Pintu taman saya selalu terbuka untuk Anda! 🌸
-      </p>
-    </div>
-
-    <div class="grid lg:grid-cols-5 gap-12 items-start">
+    <div class="grid lg:grid-cols-[.9fr_1.1fr] gap-12 lg:gap-20 items-start">
       
       <!-- Sisi Kiri: Info Kontak (2 Kolom) -->
-      <div class="lg:col-span-2 space-y-6 fade-in-up">
+      <div class="fade-in-up lg:sticky lg:top-28">
+        <p class="contact-kicker mb-5">LET'S CONNECT</p>
+        <h2 class="contact-heading font-black mb-7">Mari Terhubung dan Bangun Sesuatu Bersama.</h2>
+        <p class="text-lg md:text-xl leading-relaxed text-gray-600 dark:text-slate-300 max-w-xl">Punya ide project, ingin berdiskusi tentang website, atau sekadar ingin menyapa? Saya terbuka untuk terhubung dan berdiskusi mengenai berbagai hal seputar teknologi, web development, dan project digital.</p>
+        <div class="contact-glass rounded-3xl p-5 mt-8 flex items-start gap-4"><span class="availability-dot mt-1.5 shrink-0"></span><div><p class="font-black tracking-wide text-emerald-800 dark:text-emerald-300">AVAILABLE FOR PROJECTS</p><p class="text-sm text-gray-600 dark:text-slate-300 mt-1 leading-relaxed">Terbuka untuk berdiskusi mengenai project website, sistem informasi, dan kolaborasi digital.</p></div></div>
+        <div class="mt-10"><h3 class="text-2xl font-black text-emerald-900 dark:text-emerald-200 mb-5">Temukan Saya di Internet</h3><div class="grid sm:grid-cols-3 gap-3">
+          <a href="https://github.com/wildarahma52-maker" target="_blank" rel="noopener" class="social-card contact-glass rounded-2xl p-4 group"><i class="fab fa-github contact-icon text-2xl text-slate-800 dark:text-white"></i><span class="block text-sm font-bold text-gray-800 dark:text-slate-100 mt-3">GitHub</span><small class="block text-xs text-gray-500 dark:text-slate-400 mt-1">Explore my projects →</small></a>
+          <a href="https://www.instagram.com/wilda_rahma_wilda/" target="_blank" rel="noopener" class="social-card contact-glass rounded-2xl p-4 group"><i class="fab fa-instagram contact-icon text-2xl text-pink-500"></i><span class="block text-sm font-bold text-gray-800 dark:text-slate-100 mt-3">Instagram</span><small class="block text-xs text-gray-500 dark:text-slate-400 mt-1">Follow my journey →</small></a>
+          <a href="#contact" class="social-card contact-glass rounded-2xl p-4 group" title="LinkedIn belum ditambahkan"><i class="fab fa-linkedin-in contact-icon text-2xl text-blue-600"></i><span class="block text-sm font-bold text-gray-800 dark:text-slate-100 mt-3">LinkedIn</span><small class="block text-xs text-gray-500 dark:text-slate-400 mt-1">Connect with me →</small></a>
+        </div></div>
         <!-- Kartu WhatsApp -->
         <a href="https://wa.me/+6285358655291" target="_blank" class="block group p-8 bg-white/70 dark:bg-slate-700/50 backdrop-blur-xl rounded-[2.5rem] border border-white dark:border-slate-600 shadow-xl hover:shadow-emerald-200 dark:hover:shadow-emerald-900/20 transition-all duration-500 hover:-translate-y-2">
           <div class="flex items-center gap-6">
@@ -1030,46 +1278,49 @@ header {
       </div>
 
       <!-- Sisi Kanan: Form (3 Kolom) -->
-      <div class="lg:col-span-3 fade-in-up" style="animation-delay: 0.2s">
+      <div class="fade-in-up" style="animation-delay: 0.2s">
+        <div class="grid sm:grid-cols-2 gap-4 mb-6">
+          <a href="mailto:email-anda@example.com" class="contact-card contact-glass rounded-3xl p-6 group"><div class="flex items-start justify-between"><span class="contact-icon grid place-items-center w-12 h-12 rounded-2xl bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 text-xl"><i class="fas fa-envelope"></i></span><i class="fas fa-arrow-up-right-from-square text-emerald-500"></i></div><h3 class="font-black text-xl text-emerald-900 dark:text-emerald-200 mt-5">Email</h3><p class="text-sm text-gray-600 dark:text-slate-300 mt-2 leading-relaxed">Email saya untuk pertanyaan atau diskusi project.</p><span class="inline-block mt-5 text-sm font-black text-emerald-600">Send Email →</span></a>
+          <a href="https://wa.me/6285358655291" target="_blank" rel="noopener" class="contact-card contact-glass rounded-3xl p-6 group"><div class="flex items-start justify-between"><span class="contact-icon grid place-items-center w-12 h-12 rounded-2xl bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 text-xl"><i class="fab fa-whatsapp"></i></span><i class="fas fa-arrow-up-right-from-square text-emerald-500"></i></div><h3 class="font-black text-xl text-emerald-900 dark:text-emerald-200 mt-5">WhatsApp</h3><p class="text-sm text-gray-600 dark:text-slate-300 mt-2 leading-relaxed">Hubungi saya secara langsung melalui WhatsApp.</p><span class="inline-block mt-5 text-sm font-black text-emerald-600">Chat on WhatsApp →</span></a>
+          <div class="contact-card contact-glass rounded-3xl p-6 group sm:col-span-2"><div class="flex items-start justify-between"><span class="contact-icon grid place-items-center w-12 h-12 rounded-2xl bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 text-xl"><i class="fas fa-location-dot"></i></span><i class="fas fa-compass text-emerald-500"></i></div><h3 class="font-black text-xl text-emerald-900 dark:text-emerald-200 mt-5">Based in</h3><p class="text-sm text-gray-600 dark:text-slate-300 mt-2">Sigli, Aceh, Indonesia</p></div>
+        </div>
         <div class="bg-white/80 dark:bg-slate-700/80 backdrop-blur-2xl p-10 md:p-12 rounded-[3.5rem] shadow-2xl border border-white dark:border-slate-600 relative overflow-hidden">
           
           <!-- Ornamen Bunga di Sudut Form -->
           <div class="form-flower top-right text-3xl">🌻</div>
           <div class="form-flower bottom-left text-3xl">🌷</div>
           
-          <form id="contactForm" class="space-y-6 relative z-10">
+          <form id="contactForm" class="space-y-5 relative z-10">
             <div class="grid md:grid-cols-2 gap-6">
               <div class="space-y-2">
-                <label class="text-sm font-black text-emerald-800 dark:text-emerald-400 ml-2">NAMA LENGKAP</label>
-                <input type="text" required class="form-input w-full px-6 py-4 bg-emerald-50/50 dark:bg-slate-800/50 border-2 border-emerald-100 dark:border-slate-600 rounded-[1.5rem] focus:border-emerald-500 outline-none transition-all dark:text-white" placeholder="Wilda Rahma">
+                <label class="text-sm font-bold text-emerald-900 dark:text-emerald-200">Nama</label>
+                <input name="name" type="text" required class="contact-input w-full rounded-xl border border-emerald-100 dark:border-slate-600 bg-white/70 dark:bg-slate-900/40 px-4 py-3 dark:text-white" placeholder="Masukkan nama Anda">
               </div>
 
-            <div class="space-y-2">
-              <label class="text-sm font-black text-emerald-800 dark:text-emerald-400 ml-2">SUBJEK PESAN</label>
-              <input type="text" required class="form-input w-full px-6 py-4 bg-emerald-50/50 dark:bg-slate-800/50 border-2 border-emerald-100 dark:border-slate-600 rounded-[1.5rem] focus:border-emerald-500 outline-none transition-all dark:text-white" placeholder="Tawaran Kerjasama / Sapaan">
+              <div class="space-y-2">
+              <label class="text-sm font-bold text-emerald-900 dark:text-emerald-200">Email</label>
+              <input name="email" type="email" required class="contact-input w-full rounded-xl border border-emerald-100 dark:border-slate-600 bg-white/70 dark:bg-slate-900/40 px-4 py-3 dark:text-white" placeholder="Masukkan email Anda">
+              </div>
             </div>
 
             <div class="space-y-2">
-              <label class="text-sm font-black text-emerald-800 dark:text-emerald-400 ml-2">PESAN ANDA</label>
-              <textarea rows="4" required class="form-input w-full px-6 py-4 bg-emerald-50/50 dark:bg-slate-800/50 border-2 border-emerald-100 dark:border-slate-600 rounded-[1.5rem] focus:border-emerald-500 outline-none transition-all dark:text-white resize-none" placeholder="Tuliskan pesan manis Anda di sini..."></textarea>
+              <label class="text-sm font-bold text-emerald-900 dark:text-emerald-200">Subject</label>
+              <input name="subject" type="text" required class="contact-input w-full rounded-xl border border-emerald-100 dark:border-slate-600 bg-white/70 dark:bg-slate-900/40 px-4 py-3 dark:text-white" placeholder="Apa yang ingin dibicarakan?">
             </div>
-
-            <button type="submit" class="w-full group relative py-5 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white rounded-[1.5rem] font-black text-lg shadow-xl shadow-emerald-200 dark:shadow-none hover:scale-[1.02] transition-all overflow-hidden">
-              <span class="relative z-10 flex items-center justify-center gap-3">
-                Kirim Pesan <i class="fas fa-paper-plane group-hover:translate-x-2 group-hover:-translate-y-2 transition-transform"></i>
-              </span>
-              <!-- Efek Cahaya saat di-hover -->
-              <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-            </button>
+            <div class="space-y-2"><label class="text-sm font-bold text-emerald-900 dark:text-emerald-200">Message</label><textarea name="message" rows="5" required class="contact-input w-full rounded-xl border border-emerald-100 dark:border-slate-600 bg-white/70 dark:bg-slate-900/40 px-4 py-3 dark:text-white resize-y" placeholder="Ceritakan project atau pesan Anda..."></textarea></div>
+            <button type="submit" class="contact-button w-full rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-black py-4"><span class="contact-button-label">Send Message →</span><i class="fas fa-spinner fa-spin hidden ml-2 contact-spinner"></i></button>
+            <p id="contactStatus" class="hidden text-center text-sm font-bold text-emerald-700 dark:text-emerald-300" role="status">Pesan berhasil dikirim. Terima kasih sudah menghubungi saya!</p>
           </form>
         </div>
       </div>
     </div>
+    <div class="contact-glass rounded-[2rem] p-8 md:p-12 mt-16 text-center fade-in-up"><p class="contact-kicker mb-4">ONE IDEA CAN START IT ALL</p><h3 class="text-3xl md:text-4xl font-black text-emerald-900 dark:text-emerald-200">Punya sebuah ide?</h3><p class="max-w-2xl mx-auto mt-4 text-gray-600 dark:text-slate-300 leading-relaxed">Tidak harus langsung menjadi project besar. Ceritakan saja idenya, lalu mari kita lihat bagaimana teknologi dapat membantu mewujudkannya.</p><a href="https://wa.me/6285358655291" target="_blank" rel="noopener" class="inline-flex items-center justify-center gap-2 mt-7 px-7 py-4 rounded-xl bg-emerald-700 text-white font-black hover:bg-emerald-800 transition-all">Start a Conversation →</a></div>
+    <div class="text-center mt-20"><p class="text-lg font-bold text-emerald-900 dark:text-emerald-200">Terima kasih sudah berkunjung ke portfolio saya.</p><p class="mt-3 font-black text-emerald-700 dark:text-emerald-300">Wilda Rahma</p><p class="text-sm text-gray-500 dark:text-slate-400">Informatics Student • Web Developer • Always Learning</p><div class="contact-line mx-auto mt-6"></div></div>
   </div>
 </section>
 
 <!-- 🌿 MODAL FORM LOKASI (VERSI BERSIH) -->
-<div id="modalFormLocation" class="fixed inset-0 z-[150] hidden items-center justify-center bg-black/60 backdrop-blur-md p-4 transition-all duration-300">
+<div id="modalFormLocation" class="modal-location fixed inset-0 z-[150] hidden items-center justify-center bg-black/60 backdrop-blur-md p-4 transition-all duration-300">
   <div class="relative bg-white dark:bg-slate-800 w-full max-w-md rounded-[2.5rem] shadow-2xl border-4 border-emerald-100 dark:border-emerald-900/30 overflow-hidden transform transition-all">
     
     <!-- Tombol Tutup -->
@@ -1115,31 +1366,6 @@ header {
   </div>
 </div>
       
-   <!-- Modal Background Overlay -->
-<div id="modalFormLocation" class="fixed inset-0 z-[100] hidden items-center justify-center p-4 bg-black/60 backdrop-blur-md transition-all duration-300">
-    
-    <!-- Container Form Utama -->
-    <div class="relative bg-white dark:bg-slate-800 w-full max-w-md rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.3)] border-4 border-emerald-100 dark:border-emerald-900/30 overflow-hidden transform transition-all">
-        
-        <!-- Tombol Tutup (Close Button) -->
-        <button onclick="tutupForm()" class="absolute top-5 right-5 w-10 h-10 flex items-center justify-center rounded-full bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500 hover:text-white transition-all duration-300 z-50">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-        </button>
-
-        <!-- Dekorasi Header Bunga -->
-        <div class="bg-emerald-500 dark:bg-emerald-600 p-8 text-center relative">
-            <div class="absolute -top-10 -left-10 w-24 h-24 bg-white/20 rounded-full blur-2xl"></div>
-            <div class="text-4xl mb-2">🌸</div>
-            <h3 class="text-2xl font-serif text-white font-bold">Kirim Pesan</h3>
-            <p class="text-emerald-100 text-sm">Wilda akan segera membalasmu</p>
-        </div>
-
-       
-        </form>
-    </div>
-</div>
 <!-- 🌿 FOOTER (GARDEN OF GRATITUDE EDITION) -->
 <footer class="relative bg-gradient-to-br from-emerald-900 via-emerald-800 to-teal-900 text-white py-20 px-4 overflow-hidden">
   
@@ -1239,36 +1465,85 @@ header {
   closeMenuBtn.addEventListener('click', toggleMenu);
   menuOverlay.addEventListener('click', toggleMenu);
 
+  // Buka showcase hanya saat pengguna memilih menu Portfolio.
+  const portfolioSection = document.getElementById('portfolio');
+
+  function openPortfolio(event) {
+    event.preventDefault();
+    portfolioSection.classList.add('portfolio-open');
+    portfolioSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  document.querySelectorAll('a[href="#portfolio"]').forEach(link => {
+    link.addEventListener('click', openPortfolio);
+  });
+  if (window.location.hash === '#portfolio') {
+    portfolioSection.classList.add('portfolio-open');
+  }
+
   // Tutup menu otomatis saat klik link di mobile
   mobileLinks.forEach(link => {
     link.addEventListener('click', toggleMenu);
   });
 
-  // 🌸 Bunga animasi - DIPERBAIKI
-  function createFlower() {
-    const container = document.getElementById('flowers-container');
-    const flower = document.createElement("div");
-    flower.className = "flower";
-    
-    const flowers = ['🌸'];
-    flower.innerHTML = flowers[Math.floor(Math.random() * flowers.length)];
+  // Mini album cerita pribadi
+  const personalGallery = document.getElementById('personalGallery');
+  const gallerySlides = Array.from(document.querySelectorAll('.gallery-slide'));
+  const galleryDots = document.getElementById('galleryDots');
+  const galleryCounter = document.getElementById('galleryCounter');
+  const galleryPrev = document.getElementById('galleryPrev');
+  const galleryNext = document.getElementById('galleryNext');
+  let currentGallerySlide = 0;
+  let galleryTimer;
 
-    flower.style.left = Math.random() * 100 + '%';
-    flower.style.animationDuration = (2 + Math.random() * 2) + 's';
-    flower.style.fontSize = (4 + Math.random() * 8) + 'px';
-
-    container.appendChild(flower);
-
-    // Hapus setelah animasi selesai
-    setTimeout(() => {
-      if (flower.parentNode) {
-        flower.remove();
-      }
-    }, 9000);
+  function renderGallerySlide(index) {
+    currentGallerySlide = (index + gallerySlides.length) % gallerySlides.length;
+    gallerySlides.forEach((slide, slideIndex) => {
+      slide.classList.toggle('active', slideIndex === currentGallerySlide);
+      slide.setAttribute('aria-hidden', slideIndex !== currentGallerySlide);
+    });
+    Array.from(galleryDots.children).forEach((dot, dotIndex) => {
+      dot.classList.toggle('active', dotIndex === currentGallerySlide);
+      dot.setAttribute('aria-current', dotIndex === currentGallerySlide ? 'true' : 'false');
+    });
+    galleryCounter.textContent = `${String(currentGallerySlide + 1).padStart(2, '0')} / ${String(gallerySlides.length).padStart(2, '0')}`;
   }
 
-  // Mulai animasi bunga
-  setInterval(createFlower, 600); // Lebih sering untuk efek bagus
+  gallerySlides.forEach((_, slideIndex) => {
+    const dot = document.createElement('button');
+    dot.type = 'button';
+    dot.className = 'gallery-dot';
+    dot.setAttribute('aria-label', `Buka cerita ${slideIndex + 1}`);
+    dot.addEventListener('click', () => {
+      renderGallerySlide(slideIndex);
+      restartGalleryTimer();
+    });
+    galleryDots.appendChild(dot);
+  });
+
+  function restartGalleryTimer() {
+    clearInterval(galleryTimer);
+    galleryTimer = setInterval(() => renderGallerySlide(currentGallerySlide + 1), 6500);
+  }
+
+  galleryPrev.addEventListener('click', () => {
+    renderGallerySlide(currentGallerySlide - 1);
+    restartGalleryTimer();
+  });
+  galleryNext.addEventListener('click', () => {
+    renderGallerySlide(currentGallerySlide + 1);
+    restartGalleryTimer();
+  });
+  personalGallery.addEventListener('mouseenter', () => clearInterval(galleryTimer));
+  personalGallery.addEventListener('mouseleave', restartGalleryTimer);
+  personalGallery.addEventListener('focusin', () => clearInterval(galleryTimer));
+  personalGallery.addEventListener('focusout', restartGalleryTimer);
+  personalGallery.addEventListener('keydown', event => {
+    if (event.key === 'ArrowLeft') galleryPrev.click();
+    if (event.key === 'ArrowRight') galleryNext.click();
+  });
+  renderGallerySlide(0);
+  restartGalleryTimer();
 
   // Intersection Observer untuk animasi
   const observerOptions = {
@@ -1291,31 +1566,46 @@ header {
   // Foto upload
   const photoUpload = document.getElementById('photoUpload');
   const profilePhoto = document.getElementById('profilePhoto');
-  
-  photoUpload.addEventListener('change', function(e) {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        profilePhoto.src = e.target.result;
-      }
-      reader.readAsDataURL(file);
+
+  // Sinkronkan biodata yang diedit dengan CV ringkas secara langsung.
+  const cvFields = {
+    bioName: ['cvName', 'cv-name'],
+    bioBirth: ['cvBirth', 'cv-birth'],
+    bioAddress: ['cvAddress', 'cv-address'],
+    bioEducation: ['cvEducation', 'cv-education']
+  };
+
+  Object.entries(cvFields).forEach(([sourceId, [previewId, storageKey]]) => {
+    const source = document.getElementById(sourceId);
+    const preview = document.getElementById(previewId);
+    const savedValue = localStorage.getItem(storageKey);
+    if (savedValue) {
+      source.textContent = savedValue;
     }
+
+    const updateCv = () => {
+      const value = source.textContent.trim();
+      preview.textContent = value;
+      localStorage.setItem(storageKey, value);
+    };
+
+    updateCv();
+    source.addEventListener('input', updateCv);
+    source.addEventListener('blur', updateCv);
   });
 
-  // Fungsi untuk membuka form (panggil dari tombol alamat/lokasi)
-function bukaForm() {
-    const modal = document.getElementById('modalFormLocation');
-    modal.classList.remove('hidden');
-    modal.classList.add('flex');
-}
-
-// Fungsi untuk menutup form
-function tutupForm() {
-    const modal = document.getElementById('modalFormLocation');
-    modal.classList.add('hidden');
-    modal.classList.remove('flex');
-}
+  if (photoUpload) {
+    photoUpload.addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          profilePhoto.src = event.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  }
 
 // Fungsi kirim ke WhatsApp
 function kirimKeWA() {
@@ -1339,7 +1629,7 @@ function kirimKeWA() {
     window.open(`https://wa.me/${noHP}?text=${teksPesan}`, '_blank');
     
     // Tutup form setelah klik kirim
-    tutupForm();
+    closeLocationForm();
 }
   
 
@@ -1401,31 +1691,40 @@ function closeLocationForm() {
     modal.classList.remove('flex');
     document.body.style.overflow = 'auto';
 }
-  // Contact form
+  // Contact form uses the existing WhatsApp flow without a backend.
   document.getElementById('contactForm').addEventListener('submit', function(e) {
     e.preventDefault();
-    alert('Terima kasih! Pesan Anda telah dikirim 🌸');
-    this.reset();
+    const form = this;
+    const button = form.querySelector('button[type="submit"]');
+    const label = form.querySelector('.contact-button-label');
+    const spinner = form.querySelector('.contact-spinner');
+    const status = document.getElementById('contactStatus');
+    const data = new FormData(form);
+    const message = `Halo Wilda!\n\nNama: ${data.get('name')}\nEmail: ${data.get('email')}\nSubject: ${data.get('subject')}\nPesan: ${data.get('message')}`;
+    button.classList.add('is-loading');
+    label.textContent = 'Preparing Message...';
+    spinner.classList.remove('hidden');
+    window.open(`https://wa.me/6285358655291?text=${encodeURIComponent(message)}`, '_blank');
+    window.setTimeout(() => {
+      button.classList.remove('is-loading');
+      label.textContent = 'Send Message →';
+      spinner.classList.add('hidden');
+      status.classList.remove('hidden');
+      form.reset();
+    }, 700);
   });
 
   // Inisialisasi saat halaman load
   window.addEventListener('load', function() {
     initMap();
-    createFlower(); // Mulai bunga segera
   });
 
   // Tutup mobile menu saat klik link
-  navLinks.forEach(link => {
+  mobileLinks.forEach(link => {
     link.addEventListener('click', () => {
       mobileMenu.classList.remove('open');
     });
   });
-
-  function toggleAddressForm() {
-    const form = document.getElementById('addressForm');
-    form.classList.toggle('translate-y-[150%]');
-    form.classList.toggle('translate-y-0');
-}
 
 // Fungsi untuk memunculkan/menyembunyikan form
 function toggleRouteForm() {
@@ -1454,20 +1753,6 @@ function generateRoute() {
     const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(start)}&destination=${destination}&travelmode=driving`;
     
     window.open(googleMapsUrl, '_blank');
-}
-
-// Toggle muncul/sembunyi form
-function toggleRouteForm() {
-    const form = document.getElementById('routeForm');
-    const isHidden = form.classList.contains('translate-y-[120%]');
-    
-    if (isHidden) {
-        form.classList.remove('translate-y-[120%]', 'opacity-0');
-        form.classList.add('translate-y-0', 'opacity-100');
-    } else {
-        form.classList.add('translate-y-[120%]', 'opacity-0');
-        form.classList.remove('translate-y-0', 'opacity-100');
-    }
 }
 
 // Fungsi membuka rute ke Gampong Jeumpa
